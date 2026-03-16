@@ -54,36 +54,40 @@ st.markdown("""
         color: white !important;
         border: none !important;
         border-radius: 14px !important;
-        padding: 14px 28px !important;
         font-weight: 700 !important;
         font-size: 15px !important;
         width: 100% !important;
         height: 54px !important;
         box-shadow: 0 4px 14px rgba(37,99,235,0.3) !important;
         transition: all 0.2s !important;
+        white-space: nowrap !important;
     }
     .search-btn .stButton > button:hover {
         background: #1d4ed8 !important;
         box-shadow: 0 6px 20px rgba(37,99,235,0.4) !important;
-        transform: translateY(-1px) !important;
     }
 
     /* Popular ticker buttons */
     .pop-btn .stButton > button {
         background: #ffffff !important;
-        color: #374151 !important;
-        border: 1.5px solid #e2e8f0 !important;
-        border-radius: 10px !important;
-        padding: 6px 4px !important;
-        font-size: 12px !important;
+        color: #1d4ed8 !important;
+        border: 1.5px solid #bfdbfe !important;
+        border-radius: 8px !important;
+        padding: 5px 4px !important;
+        font-size: 11px !important;
         font-weight: 700 !important;
         width: 100% !important;
-        transition: all 0.2s !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        letter-spacing: 0.02em !important;
+        transition: all 0.15s !important;
+        background-color: #eff6ff !important;
     }
     .pop-btn .stButton > button:hover {
-        background: #eff6ff !important;
-        color: #1d4ed8 !important;
-        border-color: #93c5fd !important;
+        background: #dbeafe !important;
+        border-color: #3b82f6 !important;
+        color: #1e40af !important;
     }
 
     /* Metrics */
@@ -153,7 +157,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Sidebar (settings only) ───────────────────────────────────
+# ── Sidebar ───────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
     <div style='padding:24px 0 32px;'>
@@ -177,24 +181,21 @@ with st.sidebar:
 
     st.markdown("""
     <div style='margin-top:32px;padding-top:20px;border-top:1px solid #1e293b;'>
-        <div style='font-size:11px;color:#475569;line-height:1.6;'>
-            Supports stocks from all major exchanges worldwide including NYSE, NASDAQ,
-            BSE, NSE, LSE, and more.
+        <div style='font-size:11px;color:#475569;line-height:1.7;'>
+            Supports NYSE, NASDAQ, NSE, BSE, LSE and all major global exchanges.
+            <br><br>
+            Indian stocks: add .NS (e.g. TCS.NS)<br>
+            UK stocks: add .L (e.g. BP.L)
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# ── Top navbar ────────────────────────────────────────────────
+# ── Navbar ────────────────────────────────────────────────────
 st.markdown("""
-<div style='display:flex;align-items:center;justify-content:space-between;
-            margin-bottom:32px;'>
+<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;'>
     <div>
-        <span style='font-size:24px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;'>
-            StockMind
-        </span>
-        <span style='font-size:24px;font-weight:800;color:#3b82f6;letter-spacing:-0.5px;'>
-            AI
-        </span>
+        <span style='font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;'>StockMind</span>
+        <span style='font-size:26px;font-weight:800;color:#3b82f6;letter-spacing:-0.5px;'>AI</span>
         <div style='font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500;'>
             Global Market Intelligence Platform
         </div>
@@ -212,16 +213,16 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Search bar ────────────────────────────────────────────────
+# ── Search Box ────────────────────────────────────────────────
 st.markdown("""
 <div style='background:#ffffff;border:1.5px solid #e2e8f0;border-radius:20px;
-            padding:28px 32px;margin-bottom:20px;
-            box-shadow:0 4px 20px rgba(0,0,0,0.05);'>
-    <div style='font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;'>
+            padding:24px 32px 16px;margin-bottom:16px;
+            box-shadow:0 4px 20px rgba(0,0,0,0.04);'>
+    <div style='font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px;'>
         Search any stock worldwide
     </div>
-    <div style='font-size:12px;color:#94a3b8;margin-bottom:16px;'>
-        Enter a ticker symbol from any global exchange — NYSE, NASDAQ, BSE, NSE, LSE and more
+    <div style='font-size:12px;color:#94a3b8;'>
+        NYSE · NASDAQ · NSE · BSE · LSE · TSX and more
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -231,7 +232,7 @@ with search_col:
     top_search = st.text_input(
         "",
         value=st.session_state.get("current_symbol", "AAPL"),
-        placeholder="Search worldwide — AAPL, TCS, RELIANCE.NS, INFY, TSLA, MSFT, NVDA...",
+        placeholder="Type ticker — AAPL, TCS.NS, RELIANCE.NS, TSLA, NVDA, BP.L...",
         label_visibility="collapsed",
         key="top_search_input"
     ).upper().strip()
@@ -241,32 +242,30 @@ with btn_col:
     search_btn = st.button("Search", use_container_width=True, key="main_search_btn")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ── Popular tickers ───────────────────────────────────────────
+# ── Quick Picks ───────────────────────────────────────────────
 st.markdown("""
-<div style='display:flex;align-items:center;gap:10px;margin:8px 0 4px;'>
-    <span style='font-size:11px;color:#94a3b8;font-weight:600;
-                 text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;'>
-        Quick pick:
-    </span>
+<div style='font-size:11px;color:#94a3b8;font-weight:600;
+            text-transform:uppercase;letter-spacing:0.08em;
+            margin:10px 0 8px;'>
+    Quick pick
 </div>
 """, unsafe_allow_html=True)
 
 popular_list = [
-    ("AAPL","Apple"), ("MSFT","Microsoft"), ("GOOGL","Google"),
-    ("TSLA","Tesla"), ("NVDA","NVIDIA"), ("AMZN","Amazon"),
-    ("META","Meta"), ("NFLX","Netflix"), ("TCS.NS","TCS"),
-    ("INFY.NS","Infosys"), ("JPM","JPMorgan"), ("V","Visa"),
+    "AAPL", "MSFT", "GOOGL", "TSLA",
+    "NVDA", "AMZN", "META", "NFLX",
+    "TCS.NS", "INFY.NS", "JPM", "V",
 ]
 
 st.markdown('<div class="pop-btn">', unsafe_allow_html=True)
 pop_cols = st.columns(len(popular_list), gap="small")
 quick_pick = None
-for i, (tick, name) in enumerate(popular_list):
+for i, tick in enumerate(popular_list):
     if pop_cols[i].button(tick, key=f"pop_{tick}"):
         quick_pick = tick
 st.markdown('</div>', unsafe_allow_html=True)
 
-# ── Resolve symbol & trigger ──────────────────────────────────
+# ── Resolve Symbol ────────────────────────────────────────────
 if quick_pick:
     symbol = quick_pick
     st.session_state["current_symbol"] = symbol
@@ -284,7 +283,7 @@ else:
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ── Fetch data ────────────────────────────────────────────────
+# ── Fetch Data ────────────────────────────────────────────────
 if trigger:
     with st.spinner(f"Analyzing {symbol}..."):
         data = APIClient.analyze_stock(symbol, period)
@@ -295,12 +294,11 @@ data = st.session_state.get("data")
 if not data:
     st.markdown("""
     <div style='text-align:center;padding:80px 40px;'>
-        <div style='font-size:48px;margin-bottom:16px;'>🔍</div>
         <div style='font-size:20px;font-weight:700;color:#0f172a;margin-bottom:8px;'>
-            Search for any stock
+            Search for any stock above
         </div>
         <div style='font-size:14px;color:#94a3b8;'>
-            Enter a ticker symbol above or click a quick pick
+            Enter a ticker symbol or click a quick pick
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -313,24 +311,24 @@ if "error" in data:
         <div style='font-size:15px;font-weight:700;color:#dc2626;margin-bottom:8px;'>
             Could not find "{symbol}"
         </div>
-        <div style='font-size:13px;color:#991b1b;line-height:1.6;'>
+        <div style='font-size:13px;color:#991b1b;line-height:1.7;'>
             Please check the symbol is correct.<br>
-            For Indian stocks add .NS (e.g. TCS.NS, INFY.NS, RELIANCE.NS)<br>
-            For London stocks add .L (e.g. BP.L, HSBA.L)
+            For Indian stocks add .NS — e.g. TCS.NS, INFY.NS, RELIANCE.NS<br>
+            For London stocks add .L — e.g. BP.L, HSBA.L
         </div>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
 
-# ── Header ────────────────────────────────────────────────────
+# ── Stock Header ──────────────────────────────────────────────
 pct   = data['percentage_change']
 delta = data['price_change']
 is_up = delta >= 0
 trend_color  = "#10b981" if is_up else "#ef4444"
 trend_bg     = "#ecfdf5" if is_up else "#fef2f2"
 trend_border = "#a7f3d0" if is_up else "#fecaca"
-trend_arrow  = "+" if is_up else ""
-sector = data.get("sector", "")
+sign         = "+" if is_up else ""
+sector       = data.get("sector", "")
 
 st.markdown(f"""
 <div style='background:#ffffff;border:1.5px solid #e2e8f0;border-radius:20px;
@@ -360,7 +358,7 @@ st.markdown(f"""
                         background:{trend_bg};padding:8px 16px;
                         border-radius:10px;border:1.5px solid {trend_border};
                         display:inline-block;'>
-                {trend_arrow}{delta:.2f}  ({trend_arrow}{pct:.2f}%)
+                {sign}{delta:.2f} ({sign}{pct:.2f}%)
             </div>
         </div>
     </div>
@@ -369,10 +367,10 @@ st.markdown(f"""
 
 # ── Metrics ───────────────────────────────────────────────────
 c1, c2, c3, c4, c5 = st.columns(5, gap="medium")
-c1.metric("Market cap",  f"${data['market_cap']/1e9:.1f}B"     if data.get('market_cap', 0) > 0 else "N/A")
-c2.metric("P/E ratio",   f"{data['pe_ratio']:.1f}"             if data.get('pe_ratio', 0) > 0 else "N/A")
-c3.metric("52W high",    f"${data.get('52w_high', 0):.2f}"     if data.get('52w_high', 0) > 0 else "N/A")
-c4.metric("52W low",     f"${data.get('52w_low', 0):.2f}"      if data.get('52w_low', 0) > 0 else "N/A")
+c1.metric("Market cap",  f"${data['market_cap']/1e9:.1f}B"      if data.get('market_cap', 0) > 0 else "N/A")
+c2.metric("P/E ratio",   f"{data['pe_ratio']:.1f}"              if data.get('pe_ratio', 0) > 0 else "N/A")
+c3.metric("52W high",    f"${data.get('52w_high', 0):.2f}"      if data.get('52w_high', 0) > 0 else "N/A")
+c4.metric("52W low",     f"${data.get('52w_low', 0):.2f}"       if data.get('52w_low', 0) > 0 else "N/A")
 c5.metric("Avg volume",  f"{data.get('avg_volume',0)/1e6:.1f}M" if data.get('avg_volume', 0) > 0 else "N/A")
 
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -438,8 +436,10 @@ fig.add_trace(go.Scatter(
     x=df["dates"], y=rsi_vals, name="RSI",
     line=dict(color="#3b82f6", width=2), showlegend=False,
 ), row=3, col=1)
-fig.add_hrect(y0=70, y1=100, fillcolor="rgba(239,68,68,0.07)",  line_width=0, row=3, col=1)
-fig.add_hrect(y0=0,  y1=30,  fillcolor="rgba(16,185,129,0.07)", line_width=0, row=3, col=1)
+fig.add_hrect(y0=70, y1=100, fillcolor="rgba(239,68,68,0.07)",
+              line_width=0, row=3, col=1)
+fig.add_hrect(y0=0, y1=30, fillcolor="rgba(16,185,129,0.07)",
+              line_width=0, row=3, col=1)
 fig.add_hline(y=70, line=dict(color="#ef4444", width=1, dash="dash"), row=3, col=1)
 fig.add_hline(y=30, line=dict(color="#10b981", width=1, dash="dash"), row=3, col=1)
 
