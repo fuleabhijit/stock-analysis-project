@@ -29,7 +29,6 @@ st.markdown("""
         max-width: 100%;
     }
 
-    /* Search input */
     .stTextInput > div > div > input {
         background: #ffffff !important;
         border: 2px solid #e2e8f0 !important;
@@ -47,9 +46,11 @@ st.markdown("""
     .stTextInput > div > div > input::placeholder {
         color: #94a3b8 !important;
     }
+    .stTextInput label { display: none !important; }
+    .stSelectbox label { display: none !important; }
+    .stMultiSelect label { display: none !important; }
 
-    /* Search button */
-    .search-btn .stButton > button {
+    .stButton > button {
         background: #2563eb !important;
         color: white !important;
         border: none !important;
@@ -62,14 +63,13 @@ st.markdown("""
         transition: all 0.2s !important;
         white-space: nowrap !important;
     }
-    .search-btn .stButton > button:hover {
+    .stButton > button:hover {
         background: #1d4ed8 !important;
         box-shadow: 0 6px 20px rgba(37,99,235,0.4) !important;
     }
 
-    /* Popular ticker buttons */
-    .pop-btn .stButton > button {
-        background: #ffffff !important;
+    div[data-testid="column"] .stButton > button {
+        background: #eff6ff !important;
         color: #1d4ed8 !important;
         border: 1.5px solid #bfdbfe !important;
         border-radius: 8px !important;
@@ -77,20 +77,17 @@ st.markdown("""
         font-size: 11px !important;
         font-weight: 700 !important;
         width: 100% !important;
+        height: 34px !important;
         white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        letter-spacing: 0.02em !important;
-        transition: all 0.15s !important;
-        background-color: #eff6ff !important;
+        box-shadow: none !important;
     }
-    .pop-btn .stButton > button:hover {
+    div[data-testid="column"] .stButton > button:hover {
         background: #dbeafe !important;
         border-color: #3b82f6 !important;
         color: #1e40af !important;
+        box-shadow: none !important;
     }
 
-    /* Metrics */
     [data-testid="stMetric"] {
         background: #ffffff;
         border: 1.5px solid #e2e8f0;
@@ -120,10 +117,16 @@ st.markdown("""
     [data-testid="stMetricDeltaIcon-Up"]   { color: #10b981 !important; }
     [data-testid="stMetricDeltaIcon-Down"] { color: #ef4444 !important; }
 
-    /* Sidebar */
     [data-testid="stSidebar"] {
         background: #0f172a;
         border-right: 1px solid #1e293b;
+    }
+    [data-testid="stSidebar"] label {
+        color: #94a3b8 !important;
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        font-weight: 700 !important;
     }
     [data-testid="stSidebar"] .stSelectbox > div > div {
         background: rgba(255,255,255,0.05) !important;
@@ -148,6 +151,8 @@ st.markdown("""
         border-radius: 10px !important;
         font-weight: 700 !important;
         width: 100% !important;
+        height: 44px !important;
+        box-shadow: none !important;
     }
 
     hr { border-color: #e2e8f0 !important; margin: 1.5rem 0 !important; }
@@ -168,13 +173,19 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<div style='font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:8px;'>Time Period</div>", unsafe_allow_html=True)
-    period = st.selectbox("", ["1d","5d","1mo","3mo","6mo","1y","2y","5y"],
-                          index=5, label_visibility="collapsed")
+    period = st.selectbox(
+        "Time Period",
+        ["1d","5d","1mo","3mo","6mo","1y","2y","5y"],
+        index=5,
+        label_visibility="visible"
+    )
 
-    st.markdown("<div style='font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin:20px 0 8px;'>Indicators</div>", unsafe_allow_html=True)
-    indicators = st.multiselect("", ["MA20","MA50","MA200","Bollinger Bands"],
-                                default=["MA20","MA50"], label_visibility="collapsed")
+    indicators = st.multiselect(
+        "Indicators",
+        ["MA20","MA50","MA200","Bollinger Bands"],
+        default=["MA20","MA50"],
+        label_visibility="visible"
+    )
 
     st.markdown("<div style='margin-top:24px;'></div>", unsafe_allow_html=True)
     sidebar_analyze = st.button("Apply & Analyze", use_container_width=True)
@@ -230,7 +241,7 @@ st.markdown("""
 search_col, btn_col = st.columns([5, 1], gap="small")
 with search_col:
     top_search = st.text_input(
-        "",
+        "Search Stock",
         value=st.session_state.get("current_symbol", "AAPL"),
         placeholder="Type ticker — AAPL, TCS.NS, RELIANCE.NS, TSLA, NVDA, BP.L...",
         label_visibility="collapsed",
@@ -238,9 +249,7 @@ with search_col:
     ).upper().strip()
 
 with btn_col:
-    st.markdown('<div class="search-btn">', unsafe_allow_html=True)
     search_btn = st.button("Search", use_container_width=True, key="main_search_btn")
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # ── Quick Picks ───────────────────────────────────────────────
 st.markdown("""
@@ -257,13 +266,11 @@ popular_list = [
     "TCS.NS", "INFY.NS", "JPM", "V",
 ]
 
-st.markdown('<div class="pop-btn">', unsafe_allow_html=True)
 pop_cols = st.columns(len(popular_list), gap="small")
 quick_pick = None
 for i, tick in enumerate(popular_list):
     if pop_cols[i].button(tick, key=f"pop_{tick}"):
         quick_pick = tick
-st.markdown('</div>', unsafe_allow_html=True)
 
 # ── Resolve Symbol ────────────────────────────────────────────
 if quick_pick:
@@ -531,7 +538,7 @@ with right_col:
 
 st.markdown("<div style='margin-top:20px;'></div>", unsafe_allow_html=True)
 
-# Analysis cards
+# ── Analysis Cards ────────────────────────────────────────────
 analysis_items = [
     ("Technical Analysis", "technical_analysis"),
     ("Price Trend",        "trend"),
