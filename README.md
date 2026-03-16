@@ -16,13 +16,13 @@ A full-stack AI-powered stock analysis platform built with Python, FastAPI, Stre
 ---
 
 ### Search & Market Overview
-![Search](screenshots/photo_2026-03-16 11.07.43.jpeg)
+![Search](screenshots/search.jpeg)
 
 ### Price & Volume Chart
-![Chart](screenshots/photo_2026-03-16 11.07.45.jpeg)
+![Chart](screenshots/chart.jpeg)
 
 ### AI-Powered Analysis
-![Analysis](screenshots/photo_2026-03-16 11.07.47.jpeg)
+![Analysis](screenshots/analysis.jpeg)
 
 ## Tech Stack
 
